@@ -8,7 +8,7 @@ import pygame as pg
 WIDTH = 1600  # ゲームウィンドウの幅
 HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5  # 爆弾の数
-
+beams=[]
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     """
@@ -142,6 +142,7 @@ class Beam:
         """
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img, self._rct)
+        
 
 
 def main():
@@ -160,7 +161,7 @@ def main():
             if event.type == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-                beam = Beam(bird)
+                beams.append(Beam(bird))
 
         tmr += 1
         screen.blit(bg_img, [0, 0])
@@ -174,18 +175,21 @@ def main():
                 pg.display.update()
                 time.sleep(1)
                 return
-            
+                
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-
-        if beam is not None:  # ビームが存在しているとき
+        for beam in beams :
             beam.update(screen)
-            for i, bomb in enumerate(bombs):
-                if beam._rct.colliderect(bomb._rct):
-                    beam = None
-                    del bombs[i]
-                    bird.change_img(6, screen)
-                    break
+            for k,beam in enumerate(beams):
+                for i, bomb in enumerate(bombs):
+                    if beam is not None:
+                        if beam._rct.colliderect(bomb._rct):
+                            del beams[k]
+                            del bombs[i]
+                            bird.change_img(6, screen)
+                            break
+
+ 
 
         pg.display.update()
         clock.tick(1000)
