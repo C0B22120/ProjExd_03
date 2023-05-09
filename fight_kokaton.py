@@ -49,6 +49,20 @@ class Bird:
             True, 
             False
         )
+        img0 = pg.transform.flip(pg.image.load(f"ex03-20230509/fig/{num}.png"),True,False)
+        img1 = pg.image.load(f"ex03-20230509/fig/{num}.png")
+        self._imgs = {
+         (+1,0) :pg.transform.rotozoom(img0,0,2.0 ),
+         (+1,-1):pg.transform.rotozoom(img0,45,2.0 ),
+         (0,-1) :pg.transform.rotozoom(img0,90,2.0 ),
+         (-1,-1):pg.transform.rotozoom(img1,-45,2.0 ),
+         (-1,0) :pg.transform.rotozoom(img1,0,2.0 ),
+         (-1,+1):pg.transform.rotozoom(img1,45,2.0 ),
+         (0,+1) :pg.transform.rotozoom(img1,90,2.0 ),
+         (+1,+1):pg.transform.rotozoom(img0,-45,2.0 ),
+
+        }
+        self._img = self._imgs[1,0]
         self._rct = self._img.get_rect()
         self._rct.center = xy
 
@@ -67,15 +81,20 @@ class Bird:
         引数1 key_lst：押下キーの真理値リスト
         引数2 screen：画面Surface
         """
+        sum_mv = [0,0]
         for k, mv in __class__._delta.items():
             if key_lst[k]:
                 self._rct.move_ip(mv)
+                sum_mv[0]+=mv[0]
+                sum_mv[1]+=mv[1]
         if check_bound(screen.get_rect(), self._rct) != (True, True):
             for k, mv in __class__._delta.items():
                 if key_lst[k]:
                     self._rct.move_ip(-mv[0], -mv[1])
+        if not sum_mv[0] == 0 and sum_mv[1] == 0:
+           self._img = self._imgs[tuple(sum_mv)]
         screen.blit(self._img, self._rct)
-
+        print(sum_mv)
 
 class Bomb:
     """
