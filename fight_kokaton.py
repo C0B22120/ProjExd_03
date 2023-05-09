@@ -9,6 +9,7 @@ WIDTH = 1600  # ゲームウィンドウの幅
 HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5  # 爆弾の数
 beams=[]
+Explosions=[]
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     """
@@ -150,13 +151,12 @@ class Explosion:
                    pg.transform.rotozoom(img0,180,2.0),
                    pg.transform.rotozoom(img0,270,2.0)]
         self._rct=img0.get_rect()
-        self._life=20
-        self._rct.centerx=bomb._rct.centerx
-        self._rct.centery=bomb._rct.centery
+        self._life=200
+        self._rct.center=bomb._rct.center
     def update(self,screen):
-        while self._life > 0:
-            screen.blit(self._imgs[self._life%4],self._rct)
-            self._life-=1
+            while self._life>0:
+                screen.blit(self._imgs[self._life%4],self._rct)
+                self._life-=1
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -196,8 +196,8 @@ def main():
                 for i, bomb in enumerate(bombs):
                     if beam is not None:
                         if beam._rct.colliderect(bomb._rct):
-                            Expolosions=[Explosion(bombs[i])]
-                            for explosion in Expolosions:
+                            Explosions.append(Explosion(bombs[i]))
+                            for explosion in Explosions:
                                 explosion.update(screen)
                             del beams[k]
                             del bombs[i]
