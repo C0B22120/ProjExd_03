@@ -143,7 +143,12 @@ class Beam:
         """
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img, self._rct)
+
+
 class Explosion:
+    """
+    爆発を表示するためのクラス
+    """
     def __init__(self,bomb:Bomb):
         img0 = pg.image.load(f"ex03-20230509/fig/explosion.gif")
         self._imgs=[pg.transform.rotozoom(img0,0,2.0),
@@ -157,6 +162,8 @@ class Explosion:
             while self._life>0:
                 screen.blit(self._imgs[self._life%4],self._rct)
                 self._life-=1
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
